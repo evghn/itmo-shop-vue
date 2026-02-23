@@ -1,3 +1,26 @@
+<script setup>
+import { userLogin } from '@/api/admin/user.api';
+import router from '@/router';
+import { useUserStore } from '@/stores/store.user';
+import { ref } from 'vue';
+
+
+const userForm = ref({
+  login: "q",
+  password: "123"
+})
+
+
+const submiForm = async () => {  
+  if (userForm.value.login.length && userForm.value.password.length) {
+    const userStore = useUserStore();
+    const res = await userStore.login(userForm.value)  
+    if (res) {     
+      router.push({ name: 'admin-panel'})
+    }
+  } 
+}
+</script>
 <template>
     <div class="h-screen bg-linear-to-br from-blue-500 to-purple-600">
 <div class="min-h-full flex  flex-col items-center justify-between">
@@ -19,40 +42,38 @@
           <p class="text-gray-500 mt-1">Sign in to continue to your dashboard</p>
         </div>
 
-        <form>
+      
           <div class="form-group">
-            <label class="form-label">Email Address</label>
+            <label class="form-label">User Login
             <div class="relative">
               <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path>
                 </svg>
               </span>
-              <input type="email" class="form-control pl-10" placeholder="admin@example.com">
+              <input type="text" class="form-control pl-10" placeholder="user login" v-model="userForm.login">
             </div>
+            </label>
+            
+
           </div>
 
           <div class="form-group">
-           
-            <div class="relative">
-              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                </svg>
-              </span>
-              <input type="password" class="form-control pl-10" placeholder="Enter your password">
+           <label class="form-label">User Password             
+             <div class="relative">
+               <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                  </svg>
+                </span>
+                <input type="password" class="form-control pl-10" placeholder="Enter your password"  v-model="userForm.password">
+              </div>
+            </label>
             </div>
-          </div>
-
-         
-
-          <button type="submit" class="btn btn-primary w-full btn-lg mb-4">
+          <button  class="btn btn-primary w-full btn-lg mb-4" @click="submiForm">
             Sign In
           </button>
-
-          
-         
-        </form>
+        
       </div>
 
     </div>

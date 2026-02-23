@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
+import { useUserStore } from "@/stores/store.user";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -13,18 +14,39 @@ const router = createRouter({
     {
       path: "/admin",
       component: () => import("@/pages/admin/layouts/AdminLayout.vue"),
+      meta: { requiresAuth: true, role: "admin" },
+      
       children: [
         {
           path: "",
+          name: "admin-panel",
           component: () => import("@/pages/admin/AdminMain.vue"),
           // только авторизованные пользователи могут создавать сообщения
-          meta: { requiresAuth: true, role: "admin" },
         },
+
+        {
+          path: "categories",
+          name: "categories",
+          component: () => import("@/pages/admin/ProductCategory.vue"),
+          // только авторизованные пользователи могут создавать сообщения
+          // meta: { requiresAuth: true, role: "admin" },
+        },
+
+        {
+          path: "category-create",
+          name: "category-create",
+          component: () => import("@/pages/admin/CreateCategory.vue"),
+          // только авторизованные пользователи могут создавать сообщения
+          // meta: { requiresAuth: true, role: "admin" },
+        },
+
+        
         
       ],
     },
     {
       path: "/admin/login",
+      name: "admin-login",
       component: () => import("@/pages/admin/SignIn.vue"),
       // только авторизованные пользователи могут создавать сообщения
       meta: { requiresAuth: false },
@@ -60,5 +82,22 @@ const router = createRouter({
     },
   ],
 });
+
+
+router.beforeEach(async (to, from) => {
+  const user = useUserStore();
+  // console.log(user.isAuthenticated, to.name);
+  
+  if (!user.isAuthenticated && to.name !== 'admin-login') {
+    // перенаправить пользователя на страницу входа
+    return { name: 'admin-login' }
+  }  else {
+    if (user.isAuthenticated && to.name.meta?.role) {
+      if (to.name.meta?.role !== user.role) {
+        return { name: 'admin-login' }
+      }
+    } 
+  }
+})
 
 export default router;
