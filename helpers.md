@@ -48,3 +48,27 @@ async function submitForm() {
   }
 }
 </script>
+
+
+{
+    path: "/categories",
+    name: "categories",
+    component: () => import("@/pages/admin/ProductCategory.vue"),
+    children: [
+      {
+        path: ":id", 
+        name: "category-detail",
+        component: () => import("@/pages/admin/CategoryDetail.vue")
+      }
+    ]
+  }
+
+  <router-link :to="{ name: 'category-detail', params: { id: 2 } }">
+  Перейти к категории 2
+</router-link>
+
+router.push({ 
+  name: "category-detail", 
+  params: { id: 2 } 
+});
+
