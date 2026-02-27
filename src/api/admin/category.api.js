@@ -3,33 +3,46 @@
 import { useUserStore } from "@/stores/store.user";
 import { http } from "../client.http";
 
-export const categoryCreate = async (data) => {
+const urlCategories = "/shop/admin/categories";
+
+export const createCategory = async (data) => {
   try {
-    const response = await http.post("/shop/admin/categories", data, {
-    //   headers: {
-        // "Content-Type": "multipart/form-data",
-    //   },
+    const response = await http.post(urlCategories, data, {
+      //   headers: {
+      // "Content-Type": "multipart/form-data",
+      //   },
     });
-    if (response.status === 201) {
-        return true;
-    }
-  } catch {
-    return false;
-  }
+    return response.status === 201;
+  } catch {}
+  return false;
 };
 
-export const getCategories = async () => {
+export const updateCategory = async (id, data) => {
   try {
-    const response = await http.get("/shop/admin/categories");
-   
+    const response = await http.patch(`${urlCategories}/${id}`, data);
+    if (response.status === 200) {
+      return true;
+    }
+  } catch {}
+  return false;
+};
+
+export const getCategories = async (id = null) => {
+  try {
+    const url = id ? `${urlCategories}/${id}` : urlCategories;
+    const response = await http.get(url);
+
     if (response.status === 200) {
       return response.data;
-        
     }
-    
-
-  } catch {
-    return false
-  }
+  } catch {}
+  return false;
 };
 
+export const deleteCategory = async (id = null) => {
+  try {
+    const response = await http.delete(`${urlCategories}/${id}`);
+    return response.status === 204;
+  } catch {}
+  return false;
+};
