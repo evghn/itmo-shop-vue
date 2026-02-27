@@ -67,11 +67,20 @@ onMounted(async () => {
               <td>{{ index + 1 }}</td>
               <td>
                 <div class="flex items-center gap-3">
-                  <img
+                  
+                  <img v-if="item.photo"
+                    :src="item.photo"
+                    class="w-8 h-8 rounded-full"
+                    :alt="item.meta.title"
+                   />
+
+                <img v-else
                     src="https://ui-avatars.com/api/?name=John+Doe&amp;background=3b82f6&amp;color=fff"
                     class="w-8 h-8 rounded-full"
-                    alt="John Doe"
-                  />
+                    :alt="category"
+                   />
+
+
                 </div>
               </td>
               <td>{{ item.meta.title }}</td>

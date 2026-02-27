@@ -1,12 +1,14 @@
 <script setup>
-import {} from "@/api/admin/category.api";
+import { getCategories } from "@/api/admin/category.api";
 import { deleteProduct, getProducts } from "@/api/admin/product.api";
 
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import { getCategoriesData } from "../lib/getCategories";
 
 const router = useRouter();
 const products = ref([]);
+const categories = ref([])
 
 const handleCreate = () => {
   router.push({ name: "product-create" });
@@ -24,6 +26,16 @@ const getApiProducts = async () => {
   }
 };
 
+const getCategoryItem = (category_id) => {
+  if (categories.value.length) {
+  const category = categories.value.filter(item => item.id === category_id)
+    if (category.length) {
+      return category[0].title;
+    }
+  }
+  return ""; 
+}
+
 const updateProduct = (id) => {
   router.push({ name: "product-update", params: { id } });
 };
@@ -36,6 +48,9 @@ const deleteProductItem = async (id) => {
 
 onMounted(async () => {
   getApiProducts();
+  const responseCategories = await getCategories();
+  categories.value = getCategoriesData(responseCategories.data);
+  
 });
 </script>
 <template>
@@ -58,6 +73,7 @@ onMounted(async () => {
             <tr>
               <th>#</th>
               <th>Изображение</th>
+              <th>Категория</th>
               <th>Название</th>
               <th>Действие</th>
             </tr>
@@ -66,7 +82,14 @@ onMounted(async () => {
             <tr v-for="(item, index) in products" :key="item.id">
               <td>{{ index + 1 }}</td>
               <td>
-                <div class="flex items-center gap-3">
+                <div v-if="item.images.length">
+                <img
+                    :src="item.images[0]"
+                    class="w-16 h-16 "
+                    alt="John Doe"
+                  />
+              </div>
+                <div v-else class="flex items-center gap-3">
                   <img
                     src="https://ui-avatars.com/api/?name=John+Doe&amp;background=3b82f6&amp;color=fff"
                     class="w-8 h-8 rounded-full"
@@ -74,6 +97,7 @@ onMounted(async () => {
                   />
                 </div>
               </td>
+              <td>{{ getCategoryItem(item.category_id) }}</td>
               <td>{{ item.meta.title }}</td>
 
               <td>

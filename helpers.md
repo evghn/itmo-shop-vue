@@ -23,7 +23,7 @@ async function submitForm() {
   const formData = new FormData();
 
   // Обычные поля
-  formData.append('title', title.value);
+  formData.append('title', title.value.file);
   formData.append('description', description.value);
 
   // Получаем файлы из input напрямую

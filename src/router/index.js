@@ -7,8 +7,16 @@ const router = createRouter({
   routes: [
     {
       path: "/",
-
-      component: HomeView,
+      component: () => import("@/pages/shop/layouts/ShopLayout.vue"),
+      children: [
+        {
+          path: "",
+          name: "shop-main",
+          component: () => import("@/pages/shop/ShopMain.vue"),
+          meta: { requiresAuth: true, role: "admin" },
+          // только авторизованные пользователи могут создавать сообщения
+        },
+      ]
     },
 
     {
@@ -121,7 +129,8 @@ const router = createRouter({
 
 router.beforeEach(async (to, from) => {
   const user = useUserStore();
-
+  // console.log(user);
+  
   if (to.meta?.requiresAuth && !user.isAuthenticated) {
     return { name: "admin-login" };
   }

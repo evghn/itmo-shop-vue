@@ -48,8 +48,14 @@ const logout = async () => {
           <RouterLink
             to="/admin"
             class="nav-link px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hidden sm:block"
-            >Home
+            >Admin panel home
           </RouterLink>
+          <RouterLink
+            to="/"
+            class="nav-link px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hidden sm:block"
+            >Shop Home
+          </RouterLink>
+          
         </div>
 
         <!-- Spacer -->

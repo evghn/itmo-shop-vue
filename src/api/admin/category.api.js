@@ -8,9 +8,9 @@ const urlCategories = "/shop/admin/categories";
 export const createCategory = async (data) => {
   try {
     const response = await http.post(urlCategories, data, {
-      //   headers: {
-      // "Content-Type": "multipart/form-data",
-      //   },
+        headers: {
+      "Content-Type": "multipart/form-data",
+        },
     });
     return response.status === 201;
   } catch {}
@@ -19,7 +19,11 @@ export const createCategory = async (data) => {
 
 export const updateCategory = async (id, data) => {
   try {
-    const response = await http.patch(`${urlCategories}/${id}`, data);
+    const response = await http.patch(`${urlCategories}/${id}`, data, {
+        headers: {
+      "Content-Type": "multipart/form-data",
+        },
+    });
     if (response.status === 200) {
       return true;
     }

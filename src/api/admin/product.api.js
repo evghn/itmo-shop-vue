@@ -8,9 +8,9 @@ const urlProducts = "/shop/admin/products";
 export const createProduct = async (data) => {
   try {
     const response = await http.post(urlProducts, data, {
-      //   headers: {
-      // "Content-Type": "multipart/form-data",
-      //   },
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
     return response.status < 300 && response.status > 199;
   } catch {}
@@ -19,7 +19,11 @@ export const createProduct = async (data) => {
 
 export const updateProduct = async (id, data) => {
   try {
-    const response = await http.patch(`${urlProducts}/${id}`, data);
+    const response = await http.patch(`${urlProducts}/${id}`, data,{
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return response.status === 200;
   } catch {}
   return false;
