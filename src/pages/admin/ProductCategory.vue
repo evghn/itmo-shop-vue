@@ -1,10 +1,49 @@
 <script setup>
-import router from '@/router';
+import { getCategories } from '@/api/admin/category.api';
+import { http } from '@/api/client.http';
+// import router from '@/router';
+import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+const categories = ref([])
 
 
 const handleCreate = () => {
     router.push({name: "category-create"})
 }
+
+
+const getApiCategories = async () => {
+  try {
+    const response = await getCategories();
+    
+    if (response) {
+      categories.value = response.data.filter(val => val?.meta);
+    }
+  } catch {
+    categories.value = [];
+  }
+}
+
+const updateCategory = (id) => {
+  router.push({name: "category-update", params: {id}})
+}
+
+const deleteCategory = async (id) => {
+  const response =  await http.delete(`/shop/admin/categories/${id}`)
+  console.log(response);
+  if (response.status === 204) {
+    getApiCategories();
+  }
+  
+}
+
+onMounted(async () => {
+  getApiCategories()
+})
+
+
 </script>
 <template>
 <div class="card mb-6">
@@ -20,85 +59,34 @@ const handleCreate = () => {
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th>Изображение</th>
+                    <th>Название</th>                    
+                    <th>Действие</th>                    
                   </tr>
                 </thead>
-                <tbody>
-                  <tr>
-                    <td>1</td>
+                <tbody v-if="categories.length">
+                  <tr  v-for="(item, index) in categories" :key="item.id" >                   
+                    <td>{{ index + 1 }}</td>
                     <td>
                       <div class="flex items-center gap-3">
                         <img src="https://ui-avatars.com/api/?name=John+Doe&amp;background=3b82f6&amp;color=fff" class="w-8 h-8 rounded-full" alt="John Doe">
-                        <span>John Doe</span>
+                        
                       </div>
                     </td>
-                    <td>john@example.com</td>
-                    <td>Admin</td>
-                    <td><span class="badge badge-success">Active</span></td>
+                    <td>{{ item.meta.title }}</td>
+                    
                     <td>
                       <div class="flex gap-1">
-                        <button class="btn btn-sm btn-outline-primary">Edit</button>
-                        <button class="btn btn-sm btn-outline-danger">Delete</button>
+                        <button @click="updateCategory(item.id)" class="btn btn-sm btn-outline-primary">Edit</button>
+                        <button @click="deleteCategory(item.id)" class="btn btn-sm btn-outline-danger">Delete</button>
                       </div>
                     </td>
                   </tr>
+                  
+                </tbody>
+                <tbody v-else>
                   <tr>
-                    <td>2</td>
-                    <td>
-                      <div class="flex items-center gap-3">
-                        <img src="https://ui-avatars.com/api/?name=Jane+Smith&amp;background=10b981&amp;color=fff" class="w-8 h-8 rounded-full" alt="Jane Smith">
-                        <span>Jane Smith</span>
-                      </div>
-                    </td>
-                    <td>jane@example.com</td>
-                    <td>Editor</td>
-                    <td><span class="badge badge-success">Active</span></td>
-                    <td>
-                      <div class="flex gap-1">
-                        <button class="btn btn-sm btn-outline-primary">Edit</button>
-                        <button class="btn btn-sm btn-outline-danger">Delete</button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>3</td>
-                    <td>
-                      <div class="flex items-center gap-3">
-                        <img src="https://ui-avatars.com/api/?name=Bob+Johnson&amp;background=ef4444&amp;color=fff" class="w-8 h-8 rounded-full" alt="Bob Johnson">
-                        <span>Bob Johnson</span>
-                      </div>
-                    </td>
-                    <td>bob@example.com</td>
-                    <td>User</td>
-                    <td><span class="badge badge-warning">Pending</span></td>
-                    <td>
-                      <div class="flex gap-1">
-                        <button class="btn btn-sm btn-outline-primary">Edit</button>
-                        <button class="btn btn-sm btn-outline-danger">Delete</button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>4</td>
-                    <td>
-                      <div class="flex items-center gap-3">
-                        <img src="https://ui-avatars.com/api/?name=Alice+Brown&amp;background=8b5cf6&amp;color=fff" class="w-8 h-8 rounded-full" alt="Alice Brown">
-                        <span>Alice Brown</span>
-                      </div>
-                    </td>
-                    <td>alice@example.com</td>
-                    <td>User</td>
-                    <td><span class="badge badge-danger">Inactive</span></td>
-                    <td>
-                      <div class="flex gap-1">
-                        <button class="btn btn-sm btn-outline-primary">Edit</button>
-                        <button class="btn btn-sm btn-outline-danger">Delete</button>
-                      </div>
-                    </td>
+                    <td colspan="4">Данные пока отсутствуют</td>
                   </tr>
                 </tbody>
               </table>

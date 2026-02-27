@@ -21,6 +21,7 @@ const router = createRouter({
           path: "",
           name: "admin-panel",
           component: () => import("@/pages/admin/AdminMain.vue"),
+           meta: { requiresAuth: true, role: "admin" },
           // только авторизованные пользователи могут создавать сообщения
         },
 
@@ -28,17 +29,35 @@ const router = createRouter({
           path: "categories",
           name: "categories",
           component: () => import("@/pages/admin/ProductCategory.vue"),
+           meta: { requiresAuth: true, role: "admin" },
           // только авторизованные пользователи могут создавать сообщения
           // meta: { requiresAuth: true, role: "admin" },
+          // children: [
+          //    {
+          //     path: "/:id",
+          //     name: "category-update",
+          //     component: () => import("@/pages/admin/UpdateCategory.vue"),
+          //     meta: { requiresAuth: true, role: "admin" },
+          //   },
+          // ]
         },
 
         {
           path: "category-create",
           name: "category-create",
           component: () => import("@/pages/admin/CreateCategory.vue"),
-          // только авторизованные пользователи могут создавать сообщения
-          // meta: { requiresAuth: true, role: "admin" },
+          meta: { requiresAuth: true, role: "admin" },
         },
+
+        {
+          path: "categories/:id",
+          name: "category-update",
+          component: () => import("@/pages/admin/UpdateCategory.vue"),
+          meta: { requiresAuth: true, role: "admin" },
+        },
+       
+
+
 
         
         
@@ -86,14 +105,14 @@ const router = createRouter({
 
 router.beforeEach(async (to, from) => {
   const user = useUserStore();
-  // console.log(user.isAuthenticated, to.name);
+  
   
   if (!user.isAuthenticated && to.name !== 'admin-login') {
     // перенаправить пользователя на страницу входа
     return { name: 'admin-login' }
   }  else {
-    if (user.isAuthenticated && to.name.meta?.role) {
-      if (to.name.meta?.role !== user.role) {
+    if (user.isAuthenticated && to.meta?.role) {
+      if (to.name.meta?.role !== user.role && to.name.meta?.role == "admin") {
         return { name: 'admin-login' }
       }
     } 

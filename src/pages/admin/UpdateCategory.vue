@@ -1,12 +1,15 @@
 <script setup>
 import { categoryCreate } from '@/api/admin/category.api';
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { http } from '@/api/client.http';
+import { onMounted, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
 // import router from '@/router';
 const router = useRouter();
+const route = useRoute()
 const title = ref();
-
+const category = ref()
+const categoryId = ref()
 
 const handleCreate = () => {
   router.push()
@@ -23,12 +26,27 @@ const submit = async () => {
        title: title.value
      } 
     };
-    const response = await categoryCreate(data);
+    const response = await http.patch(`/shop/admin/categories/${categoryId.value}`, data);
+    console.log(response);
+    
     if (response) {
-      router.push({name: "categories"})
+      // router.push({name: "categories"})
     }
   }
 }
+
+
+onMounted(async () => {
+   categoryId.value = route.params.id;
+
+  const response = await http.get(`/shop/admin/categories/${categoryId.value}`)
+  // console.log(response);
+  if (response.status === 200) {
+    title.value = response.data.data[0].meta.title;
+  } 
+  
+})
+
 </script>
 <template>
   <div class="card card-primary">

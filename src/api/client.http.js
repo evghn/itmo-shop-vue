@@ -1,3 +1,4 @@
+import { useAppStore } from "@/stores/store.app";
 import { useUserStore } from "@/stores/store.user";
 import axios from "axios"
 
@@ -15,10 +16,15 @@ const http = axios.create({
 
 http.interceptors.request.use((request) => {
   const userStore = useUserStore(); 
-  
+  const app = useAppStore();
+
+  if (app.sess_id) {
+    request.headers['sess-id'] = app.sess_id;
+  }
+
   if (userStore.token) {
-      console.log(userStore);
-      request.headers['Authorization'] = `Bearer ${token.value}`
+      // console.log(userStore);
+      request.headers['Authorization'] = `Bearer ${userStore.token}`
   }
   return request
 })

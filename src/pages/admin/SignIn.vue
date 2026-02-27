@@ -6,15 +6,15 @@ import { ref } from 'vue';
 
 
 const userForm = ref({
-  login: "q",
-  password: "123"
+  login: "admin-panel",
+  password: "admin"
 })
 
 
 const submiForm = async () => {  
   if (userForm.value.login.length && userForm.value.password.length) {
     const userStore = useUserStore();
-    const res = await userStore.login(userForm.value)  
+    const res = await userStore.login(userForm.value, true)  
     if (res) {     
       router.push({ name: 'admin-panel'})
     }
