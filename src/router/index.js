@@ -26,6 +26,12 @@ const router = createRouter({
           component: () => import("@/pages/shop/ProductPage.vue"),
           meta: { requiresAuth: false },
         },
+        {
+          path: "cart",
+          name: "cart",
+          component: () => import("@/pages/shop/CartPage.vue"),
+          meta: { requiresAuth: true },
+        },
       ],
     },
 
@@ -104,19 +110,6 @@ const router = createRouter({
       component: () => import("@/pages/admin/SignIn.vue"),
       meta: { requiresAuth: false },
     },
-    // {
-    //   path: "/shop/login",
-    //   component: () => import("@/pages/shop/components/SignIn.vue"),
-    //   // только авторизованные пользователи могут создавать сообщения
-    //   meta: { requiresAuth: false },
-    // },
-    // {
-    //   path: "/shop/register",
-    //   component: () => import("@/pages/shop/components/SignUp.vue"),
-    //   // только авторизованные пользователи могут создавать сообщения
-    //   meta: { requiresAuth: false },
-    // },
-
     {
       path: "/:pathMatch(.*)*",
       name: "NotFound",
@@ -138,6 +131,7 @@ router.beforeEach(async (to, from) => {
 
   if (user.isAuthenticated && to.meta?.role) {
     if (to.meta.role === "admin" && user.role !== "admin") {
+      user.logout();
       return { name: "admin-login" };
     }
   }

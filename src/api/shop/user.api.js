@@ -36,8 +36,11 @@ export const userRegister = async (userData) => {
 
 export const userCheckAuth = async (token) => {
   try {
-    return await checkAuth(`${userUrl}`, token);
+    const res = await checkAuth(`${userUrl}`, token);
+    console.log(res);
   } catch (e) {
-    return e.data;
+    console.log(e);
+
+    return e.message;
   }
 };

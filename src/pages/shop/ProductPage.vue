@@ -87,20 +87,17 @@ const goToProduct = (item) => {
   console.log("Переход к товару:", item.title);
 };
 
-onBeforeMount(async () => {
+onMounted(async () => {
   productId.value = route.params.id;
   const _product = await getProducts(productId.value);
   if (_product) {
     product.value = _product.data[0];
-    console.log(product.value);
-
     try {
       const response = await getCategories();
       if (response) {
         const _categories = response.data.filter((val) => val?.meta);
         if (_categories.length) {
           categories.value = getCategoriesData(_categories);
-          console.log(categories.value);
         }
       }
     } catch {}
@@ -147,7 +144,7 @@ onBeforeMount(async () => {
           <h1 class="text-3xl font-bold text-gray-800 mb-4">
             {{ product?.meta?.title }}
           </h1>
-          <p class="text-gray-600 text-sm my-1 line-clamp-2">
+          <p v-if="categories" class="text-gray-600 text-sm my-1 line-clamp-2">
             {{ categories[product.category_id]?.title }}
           </p>
 

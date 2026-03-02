@@ -1,6 +1,6 @@
 import { ref, computed, watch } from "vue";
 import { defineStore } from "pinia";
-import { adminLogin } from "@/api/admin/user.api";
+import { adminCheckAuth, adminLogin } from "@/api/admin/user.api";
 import { userCheckAuth, userLogin, userLogout } from "@/api/shop/user.api";
 import { useAppStore } from "./store.app";
 
@@ -75,6 +75,7 @@ export const useUserStore = defineStore("user", () => {
       }
     } catch {
       _token.value = null;
+      role.value = null;
     }
 
     return false;

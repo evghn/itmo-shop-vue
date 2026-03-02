@@ -49,17 +49,18 @@ onMounted(() => {});
                 >Каталог</a
               >
             </li>
-            <li>
+            <li v-if="userStore.isAuthenticated">
               <a
                 href="/cart"
                 class="font-medium text-gray-700 hover:text-indigo-600"
                 >Корзина</a
               >
             </li>
-            <li>
+            <li v-if="userStore.isAuthenticated">
               <a
-                href="/profile"
+                href=""
                 class="font-medium text-gray-700 hover:text-indigo-600"
+                @click.stop.prevent
                 >Профиль</a
               >
             </li>
