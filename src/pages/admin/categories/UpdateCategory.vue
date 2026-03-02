@@ -11,7 +11,7 @@ const title = ref();
 const category = ref();
 const categoryId = ref();
 const fileInput = ref(null);
-const photo = ref()
+const photo = ref();
 const back = () => {
   router.push({ name: "categories" });
 };
@@ -26,7 +26,7 @@ const submit = async () => {
       title: title.value,
     };
     const formData = new FormData();
-    formData.append('meta', JSON.stringify(meta));
+    formData.append("meta", JSON.stringify(meta));
 
     const files = fileInput.value?.files;
 
@@ -48,10 +48,9 @@ onMounted(async () => {
 
   const response = await getCategories(categoryId.value);
 
-
   if (response) {
-    title.value = response.data[0].meta.title;
-    photo.value = response.data[0].photo
+    title.value = response.data.meta.title;
+    photo.value = response.data.photo;
   }
 });
 </script>
@@ -71,18 +70,14 @@ onMounted(async () => {
         />
       </div>
 
-       <div class="form-group">
+      <div class="form-group">
         <label class="form-label">Category image</label>
         <input type="file" class="form-control" ref="fileInput" />
       </div>
       <div class="mt-3 mb-4">
-         <div>Текущее фото</div>
-                  <img v-if="photo"
-                    :src="photo"
-                    class="w-50  "
-                    :alt="title"
-                   />
-                  <div v-else>Фото отсутствует</div> 
+        <div>Текущее фото</div>
+        <img v-if="photo" :src="photo" class="w-50" :alt="title" />
+        <div v-else>Фото отсутствует</div>
       </div>
 
       <div class="flex gap-2">

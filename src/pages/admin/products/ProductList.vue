@@ -8,7 +8,7 @@ import { getCategoriesData } from "../lib/getCategories";
 
 const router = useRouter();
 const products = ref([]);
-const categories = ref([])
+const categories = ref([]);
 
 const handleCreate = () => {
   router.push({ name: "product-create" });
@@ -26,16 +26,6 @@ const getApiProducts = async () => {
   }
 };
 
-const getCategoryItem = (category_id) => {
-  if (categories.value.length) {
-  const category = categories.value.filter(item => item.id === category_id)
-    if (category.length) {
-      return category[0].title;
-    }
-  }
-  return ""; 
-}
-
 const updateProduct = (id) => {
   router.push({ name: "product-update", params: { id } });
 };
@@ -50,7 +40,6 @@ onMounted(async () => {
   getApiProducts();
   const responseCategories = await getCategories();
   categories.value = getCategoriesData(responseCategories.data);
-  
 });
 </script>
 <template>
@@ -83,12 +72,8 @@ onMounted(async () => {
               <td>{{ index + 1 }}</td>
               <td>
                 <div v-if="item.images.length">
-                <img
-                    :src="item.images[0]"
-                    class="w-16 h-16 "
-                    alt="John Doe"
-                  />
-              </div>
+                  <img :src="item.images[0]" class="w-16 h-16" alt="John Doe" />
+                </div>
                 <div v-else class="flex items-center gap-3">
                   <img
                     src="https://ui-avatars.com/api/?name=John+Doe&amp;background=3b82f6&amp;color=fff"
@@ -97,7 +82,7 @@ onMounted(async () => {
                   />
                 </div>
               </td>
-              <td>{{ getCategoryItem(item.category_id) }}</td>
+              <td>{{ categories[item.category_id].title }}</td>
               <td>{{ item.meta.title }}</td>
 
               <td>

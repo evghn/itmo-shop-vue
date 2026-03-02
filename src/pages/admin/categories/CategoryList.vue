@@ -1,7 +1,6 @@
 <script setup>
 import { deleteCategory, getCategories } from "@/api/admin/category.api";
-import { http } from "@/api/client.http";
-// import router from '@/router';
+
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 
@@ -67,20 +66,19 @@ onMounted(async () => {
               <td>{{ index + 1 }}</td>
               <td>
                 <div class="flex items-center gap-3">
-                  
-                  <img v-if="item.photo"
+                  <img
+                    v-if="item.photo"
                     :src="item.photo"
-                    class="w-8 h-8 rounded-full"
+                    class="w-10 h-10"
                     :alt="item.meta.title"
-                   />
+                  />
 
-                <img v-else
+                  <img
+                    v-else
                     src="https://ui-avatars.com/api/?name=John+Doe&amp;background=3b82f6&amp;color=fff"
                     class="w-8 h-8 rounded-full"
-                    :alt="category"
-                   />
-
-
+                    :alt="item.meta.title"
+                  />
                 </div>
               </td>
               <td>{{ item.meta.title }}</td>

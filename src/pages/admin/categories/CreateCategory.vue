@@ -22,7 +22,7 @@ const submit = async () => {
       title: title.value,
     };
     const formData = new FormData();
-    formData.append('meta', JSON.stringify(meta));
+    formData.append("meta", JSON.stringify(meta));
 
     const files = fileInput.value?.files;
 
@@ -37,30 +37,6 @@ const submit = async () => {
     }
   }
 };
-
-const file = () => {
-  const files = fileInput.value?.files;
-  console.log(files)
-
-  // if (files && files.length > 0) {
-  //   Array.from(files).forEach((file, index) => {
-  //     formData.append(`images[${index}]`, file);
-  //   });
-  // }
-}
-
-watch(
-  () => fileInput.value,
-  () => {
-    console.log(fileInput.value.files);
-
-  },
-  {
-    deep: true
-  }
-)
-
-
 </script>
 <template>
   <div class="card card-primary">
@@ -70,7 +46,12 @@ watch(
     <div class="card-body">
       <div class="form-group">
         <label class="form-label">Title</label>
-        <input v-model.trim="title" type="text" class="form-control" placeholder="Enter title category..." />
+        <input
+          v-model.trim="title"
+          type="text"
+          class="form-control"
+          placeholder="Enter title category..."
+        />
       </div>
 
       <div class="form-group">

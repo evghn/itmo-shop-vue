@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from "vue-router";
-import HomeView from "../views/HomeView.vue";
 import { useUserStore } from "@/stores/store.user";
 
 const router = createRouter({
@@ -13,10 +12,21 @@ const router = createRouter({
           path: "",
           name: "shop-main",
           component: () => import("@/pages/shop/ShopMain.vue"),
-          meta: { requiresAuth: true, role: "admin" },
-          // только авторизованные пользователи могут создавать сообщения
+          meta: { requiresAuth: false },
         },
-      ]
+        {
+          path: "catalog",
+          name: "catalog",
+          component: () => import("@/pages/shop/CatalogPage.vue"),
+          meta: { requiresAuth: false },
+        },
+        {
+          path: "product/:id",
+          name: "product",
+          component: () => import("@/pages/shop/ProductPage.vue"),
+          meta: { requiresAuth: false },
+        },
+      ],
     },
 
     {
@@ -92,30 +102,21 @@ const router = createRouter({
       path: "/admin/login",
       name: "admin-login",
       component: () => import("@/pages/admin/SignIn.vue"),
-      // только авторизованные пользователи могут создавать сообщения
       meta: { requiresAuth: false },
     },
-    {
-      path: "/shop/login",
-      component: () => import("@/pages/shop/SignIn.vue"),
-      // только авторизованные пользователи могут создавать сообщения
-      meta: { requiresAuth: false },
-    },
-    {
-      path: "/shop/register",
-      component: () => import("@/pages/shop/SignUp.vue"),
-      // только авторизованные пользователи могут создавать сообщения
-      meta: { requiresAuth: false },
-    },
+    // {
+    //   path: "/shop/login",
+    //   component: () => import("@/pages/shop/components/SignIn.vue"),
+    //   // только авторизованные пользователи могут создавать сообщения
+    //   meta: { requiresAuth: false },
+    // },
+    // {
+    //   path: "/shop/register",
+    //   component: () => import("@/pages/shop/components/SignUp.vue"),
+    //   // только авторизованные пользователи могут создавать сообщения
+    //   meta: { requiresAuth: false },
+    // },
 
-    {
-      path: "/page2",
-      name: "about",
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import("../views/AboutView.vue"),
-    },
     {
       path: "/:pathMatch(.*)*",
       name: "NotFound",
@@ -129,8 +130,8 @@ const router = createRouter({
 
 router.beforeEach(async (to, from) => {
   const user = useUserStore();
-  // console.log(user);
-  
+  // console.log(user, to);
+
   if (to.meta?.requiresAuth && !user.isAuthenticated) {
     return { name: "admin-login" };
   }
