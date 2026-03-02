@@ -2,6 +2,7 @@
 
 import { useUserStore } from "@/stores/store.user";
 import { http } from "../client.http";
+import { getPublicProducts } from "../public/public.product.api";
 
 const urlProducts = "/shop/admin/products";
 
@@ -19,7 +20,7 @@ export const createProduct = async (data) => {
 
 export const updateProduct = async (id, data) => {
   try {
-    const response = await http.patch(`${urlProducts}/${id}`, data,{
+    const response = await http.patch(`${urlProducts}/${id}`, data, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -32,11 +33,7 @@ export const updateProduct = async (id, data) => {
 export const getProducts = async (id = null) => {
   try {
     const url = id ? `${urlProducts}/${id}` : urlProducts;
-    const response = await http.get(url);
-
-    if (response.status === 200) {
-      return response.data;
-    }
+    return await getPublicProducts(url);
   } catch {
     return false;
   }

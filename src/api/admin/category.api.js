@@ -2,15 +2,16 @@
 
 import { useUserStore } from "@/stores/store.user";
 import { http } from "../client.http";
+import { getPublicCategories } from "../public/public.category.api";
 
 const urlCategories = "/shop/admin/categories";
 
 export const createCategory = async (data) => {
   try {
     const response = await http.post(urlCategories, data, {
-        headers: {
-      "Content-Type": "multipart/form-data",
-        },
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
     return response.status === 201;
   } catch {}
@@ -20,9 +21,9 @@ export const createCategory = async (data) => {
 export const updateCategory = async (id, data) => {
   try {
     const response = await http.patch(`${urlCategories}/${id}`, data, {
-        headers: {
-      "Content-Type": "multipart/form-data",
-        },
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
     if (response.status === 200) {
       return true;
@@ -34,11 +35,7 @@ export const updateCategory = async (id, data) => {
 export const getCategories = async (id = null) => {
   try {
     const url = id ? `${urlCategories}/${id}` : urlCategories;
-    const response = await http.get(url);
-
-    if (response.status === 200) {
-      return response.data;
-    }
+    return await getPublicCategories(url);
   } catch {}
   return false;
 };

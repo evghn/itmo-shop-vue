@@ -2,7 +2,7 @@ import { useAppStore } from "@/stores/store.app";
 import { useUserStore } from "@/stores/store.user";
 import axios from "axios";
 
-const urlAPI = "http://shop.evgen9nc.beget.tech/api";
+const urlAPI = "/api";
 
 const http = axios.create({
   baseURL: urlAPI,

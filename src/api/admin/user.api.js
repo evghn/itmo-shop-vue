@@ -5,7 +5,7 @@ import { http } from "../client.http";
 
 const userUrl = "/shop/admin/users";
 
-export const userLogin = async (userData, admin) => {
+export const adminLogin = async (userData, admin) => {
   try {
     const user = useUserStore();
     if (admin) {
@@ -21,13 +21,10 @@ export const userLogin = async (userData, admin) => {
   }
 };
 
-export const userLogout = async () => {
+export const adminCheckAuth = async (token) => {
   try {
-    const user = useUserStore();
-    const response = await http.post(`${userUrl}/logout`, user);
-
-    return true;
-  } catch {
-    return false;
+    return await checkAuth(`${userUrl}`, token);
+  } catch (e) {
+    return e.data;
   }
 };
