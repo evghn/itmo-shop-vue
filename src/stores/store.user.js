@@ -1,12 +1,14 @@
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import { defineStore } from "pinia";
-import { userLogin, userLogout } from "@/api/admin/user.api";
+import { adminLogin } from "@/api/admin/user.api";
+import { userCheckAuth, userLogin, userLogout } from "@/api/shop/user.api";
+import { useAppStore } from "./store.app";
 
 export const useUserStore = defineStore("user", () => {
   const isAuthenticated = ref(false);
   const role = ref(null);
   const userData = ref();
-  // const _token = ref("FU3ynTYUcz2vhDrci_S3TudS7CG_cStMTB2")
+
   const _token = ref();
 
   const token = computed(() => _token.value);
@@ -14,36 +16,84 @@ export const useUserStore = defineStore("user", () => {
   const setToken = (value, roleData = null) => {
     _token.value = value;
     isAuthenticated.value = true;
-
     const _role = localStorage.getItem("role");
     role.value = roleData;
+
     if (roleData && _role != roleData) {
       localStorage.setItem("role", roleData);
     }
   };
 
   const login = async (user, admin = false) => {
-    const responseToken = await userLogin(user, admin);
-    if (responseToken) {
-      setToken(responseToken, "admin");
-      localStorage.setItem("token", responseToken);
-      // localStorage.setItem("role", "admin");
-
-      return true;
+    try {
+      let responseToken;
+      if (admin) {
+        responseToken = await adminLogin(user, admin);
+        if (responseToken) {
+          setToken(responseToken, "admin");
+        }
+      } else {
+        responseToken = await userLogin(user, admin);
+        if (responseToken) {
+          localStorage.removeItem("role");
+          setToken(responseToken);
+        }
+      }
+      if (responseToken) {
+        localStorage.setItem("token", responseToken);
+        userData.value = { ...user };
+        return true;
+      }
+    } catch (e) {
+      const app = useAppStore();
+      app.setFlash(e.data.message);
     }
     return false;
   };
 
   const logout = async () => {
     const res = await userLogout();
-    isAuthenticated.value = false;
-    role.value = null;
     token.value = null;
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
+
     return true;
   };
 
+  const checkAuth = async () => {
+    try {
+      _token.value = localStorage.getItem("token");
+      if (_token.value) {
+        let res;
+        const _role = localStorage.getItem("role");
+        if (_role && _role === "admin") {
+          res = await adminCheckAuth(_token.value);
+          role.value = "admin";
+        } else {
+          res = await userCheckAuth(_token.value);
+        }
+        userData.value = res.data;
+        return true;
+      }
+    } catch {
+      _token.value = null;
+    }
+
+    return false;
+  };
+
+  watch(
+    () => _token.value,
+    (val) => {
+      if (!val) {
+        userData.value = null;
+        isAuthenticated.value = false;
+        role.value = null;
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+      } else {
+        isAuthenticated.value = true;
+      }
+    },
+  );
   return {
     isAuthenticated,
     role,
@@ -52,5 +102,6 @@ export const useUserStore = defineStore("user", () => {
     login,
     logout,
     setToken,
+    checkAuth,
   };
 });
