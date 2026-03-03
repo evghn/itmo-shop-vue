@@ -43,3 +43,10 @@
 "GET api/shop/categories/<id:\d+>" - получение категории
 
 
+// корзина
+
+"GET api/shop/cart" - получение всей корзины,
+"POST api/shop/cart/add/id" - добавление товара,
+"POST api/shop/cart/dec/id" - уменьшение кол-ва товара,
+"DELET api/shop/cart/id" - удаление позиции,
+"DELETE api/shop/cart" - очистка корзины,

@@ -19,10 +19,13 @@ export const userLogin = async (userData, admin) => {
 export const userLogout = async () => {
   try {
     const user = useUserStore();
-    await http.post(`${userUrl}/logout`, user);
+    await http.post(`${userUrl}/logout`, user.userData).catch(err => { 
+      throw err 
+    });
+    
     return true;
   } catch {
-    return false;
+    throw err.response
   }
 };
 

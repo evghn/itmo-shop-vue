@@ -52,9 +52,14 @@ export const useUserStore = defineStore("user", () => {
   };
 
   const logout = async () => {
-    const res = await userLogout();
-    token.value = null;
-
+    try {
+      await userLogout();     
+    } catch (err) {
+      console.log(err);
+    } finally {
+      _token.value = null;
+    }
+    
     return true;
   };
 
@@ -64,7 +69,10 @@ export const useUserStore = defineStore("user", () => {
       if (_token.value) {
         let res;
         const _role = localStorage.getItem("role");
+        
         if (_role && _role === "admin") {
+          console.log(_role, _token.value, _role && _role === "admin");
+
           res = await adminCheckAuth(_token.value);
           role.value = "admin";
         } else {

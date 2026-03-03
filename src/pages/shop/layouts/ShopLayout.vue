@@ -3,8 +3,13 @@ import { onMounted, provide, ref, watch } from "vue";
 import SignIn from "./../components/SignIn.vue";
 import SignUp from "../components/SignUp.vue";
 import { useUserStore } from "@/stores/store.user";
+import { useRouter } from "vue-router";
+import { useCartStore } from "@/stores/cart.app";
+
+const router = useRouter();
 
 const userStore = useUserStore();
+const cartStore = useCartStore()
 const modalLogin = ref(false);
 const modalRegister = ref(false);
 
@@ -23,7 +28,24 @@ provide("userLoginRegister", {
 provide("loginClose");
 provide("registerClose");
 
-onMounted(() => {});
+watch (() => userStore.isAuthenticated,
+  async (val) => {
+    if (val) {
+      await cartStore.getCart();      
+    }
+  },
+  {
+    immediate: true
+  }  
+)
+
+onMounted(async () => {
+if (userStore.isAuthenticated) {
+  await cartStore.getCart();
+}
+});
+
+
 </script>
 <template>
   <div class="min-h-screen bg-gray-50">
@@ -50,15 +72,18 @@ onMounted(() => {});
               >
             </li>
             <li v-if="userStore.isAuthenticated">
-              <a
-                href="/cart"
-                class="font-medium text-gray-700 hover:text-indigo-600"
-                >Корзина</a
-              >
-            </li>
             <li v-if="userStore.isAuthenticated">
               <a
                 href=""
+                class="font-medium text-gray-700 hover:text-indigo-600"
+                @click.stop.prevent="router.push({name: 'cart'})"
+                >Корзина</a
+              >
+            </li v-if="userStore.isAuthenticated">
+            <li >
+              <a
+                href=""
+                @click.stop.prevent
                 class="font-medium text-gray-700 hover:text-indigo-600"
                 @click.stop.prevent
                 >Профиль</a

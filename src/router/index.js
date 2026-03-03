@@ -32,6 +32,7 @@ const router = createRouter({
           component: () => import("@/pages/shop/CartPage.vue"),
           meta: { requiresAuth: true },
         },
+        
       ],
     },
 

@@ -1,25 +1,70 @@
 // "BiAZikV9d76jI78wmv9_J5KZ2alwVPtnW8T"
 
-import { useUserStore } from "@/stores/store.user";
 import { http } from "../client.http";
-import { getPublicProducts } from "../public/public.product.api";
 
-const urlProducts = "/shop/cart";
 
-export const getProducts = async (id = null) => {
+const urlCart = "/shop/cart";
+
+export const addCartProduct = async (id, amount) => {
   try {
-    const url = id ? `${urlProducts}/${id}` : urlProducts;
-    return await getPublicProducts(url);
-  } catch {
-    return false;
-  }
+    //"POST api/shop/cart/add/id"
+    const url = `${urlCart}/add/${id}`;
+    const data = {
+      amount: amount
+    }
+    const response = await http.post(url, data, {
+        // headers: {
+        //   "Content-Type": "multipart/form-data",
+        // },
+      }).catch(err => {
+        
+        console.log(err);
+        throw err.response
+      });
+    return response;
+    
+  } catch (err) {
+    throw err
+  }  
 };
 
-export const getCategoryProducts = async (id) => {
+
+
+export const decCartProduct = async (id, amount) => {
   try {
-    const url = `${urlProducts}/category/${id}`;
-    return await getPublicProducts(url);
-  } catch {
-    return false;
+   
+    const url = `${urlCart}/dec/${id}`;
+    const data = {
+      amount: amount
+    }
+    const response = await http.post(url, data, {
+       
+      }).catch(err => {
+        
+        console.log(err);
+        throw err.response
+      });
+    return response;
+    
+  } catch (err) {
+    throw err
+  }  
+};
+
+
+
+
+export const getUserCart = async () => {
+  try {
+    const url = urlCart;
+    const response = await http.get(url).catch(err => {
+        
+      
+        throw err.response
+      });
+    return response;
+    
+  } catch (err) {
+    throw err
   }
 };

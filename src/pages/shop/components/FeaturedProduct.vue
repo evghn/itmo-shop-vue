@@ -1,7 +1,8 @@
 <script setup>
 import { getCategories } from "@/api/shop/category.api";
 import { getProducts } from "@/api/shop/product.api";
-import { getCategoriesData } from "@/pages/admin/lib/getCategories";
+import { getCategoriesData } from "@/lib/getCategories";
+
 import { computed, onMounted, ref } from "vue";
 
 const products = ref([]);

@@ -2,6 +2,7 @@
 
 import { useUserStore } from "@/stores/store.user";
 import { http } from "../client.http";
+import { checkAuth } from "../public/public.user.api";
 
 const userUrl = "/shop/admin/users";
 
